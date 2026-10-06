@@ -1,4 +1,4 @@
-# daily-log
+# Daily-log
 
 Automated daily activity log for public GitHub presence.
 
