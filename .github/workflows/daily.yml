@@ -1,0 +1,35 @@
+name: Daily log
+
+on:
+  schedule:
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-log:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Write daily entry
+        run: |
+          mkdir -p log
+          DATE=$(date -u +%Y-%m-%d)
+          TIME=$(date -u +%H:%M:%S)
+          FILE="log/${DATE}.md"
+          echo "# Daily log — ${DATE}" > "$FILE"
+          echo "" >> "$FILE"
+          echo "- UTC: ${TIME}" >> "$FILE"
+          echo "- Status: active" >> "$FILE"
+          echo "- Focus: Hermes frontend / UI" >> "$FILE"
+
+      - name: Commit and push
+        run: |
+          git config user.name "bia-studio18"
+          git config user.email "bia-studio18@users.noreply.github.com"
+          git add log/
+          git diff --staged --quiet || git commit -m "log: daily entry $(date -u +%Y-%m-%d)"
+          git push
